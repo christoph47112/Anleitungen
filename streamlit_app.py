@@ -15,7 +15,7 @@ except FileExistsError:
     pass
 
 # Funktion: Beispielanleitungen zur Datenbank hinzufügen
-def try:
+try:
     add_example_instructions()
 except sqlite3.Error as e:
     st.error(f"Fehler beim Hinzufügen der Beispielanleitungen: {e}"):
