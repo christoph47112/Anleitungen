@@ -39,7 +39,7 @@ def add_instructions_from_pdfs(pdf_files):
     """Fügt neue Anleitungen aus einer Liste von PDF-Dateien zur SQLite-Datenbank hinzu."""
     for pdf_file in pdf_files:
         # Speichern der PDF-Datei
-        pdf_path = os.path.join(UPLOAD_FOLDER, pdf_file.name)
+        pdf_path = os.path.abspath(os.path.join(UPLOAD_FOLDER, pdf_file.name))
         with open(pdf_path, "wb") as f:
             f.write(pdf_file.getbuffer())
 
@@ -116,7 +116,7 @@ with tab1:
                     st.markdown(f"**{i}. {title}**")
                     with st.expander("Anleitung anzeigen", expanded=True):
                         st.markdown(content, unsafe_allow_html=True)
-                    if os.path.exists(pdf_path):
+                    if os.path.isfile(pdf_path):
                         st.markdown(f"[PDF herunterladen]({pdf_path})", unsafe_allow_html=True)
                     else:
                         st.warning("PDF-Datei nicht gefunden.")
