@@ -11,6 +11,15 @@ def get_connection():
     """Stellt eine Verbindung zur SQLite-Datenbank her."""
     return sqlite3.connect(DATABASE)
 
+# Funktion: Neue Anleitung zur Datenbank hinzufügen
+def add_instruction(title, content, pdf_path):
+    """Fügt eine neue Anleitung zur SQLite-Datenbank hinzu."""
+    conn = get_connection()
+    cursor = conn.cursor()
+    cursor.execute("INSERT INTO instructions (title, content, pdf_path) VALUES (?, ?, ?)", (title, content, pdf_path))
+    conn.commit()
+    conn.close()
+
 # Funktion: Suche in der Datenbank mit unscharfer Suche
 def search_instructions(query):
     """Durchsucht die Datenbank mit unscharfer Suche."""
@@ -36,8 +45,8 @@ def search_instructions(query):
 # Streamlit-App
 st.title("Anleitungsmodul für das WWS")
 
-# Tabs für Suche und Anleitungsauswahl
-tab1, tab2 = st.tabs(["🔍 Suche", "📚 Anleitung auswählen"])
+# Tabs für Suche, Anleitungsauswahl und Anleitung hinzufügen
+tab1, tab2, tab3 = st.tabs(["🔍 Suche", "📚 Anleitung auswählen", "➕ Anleitung hinzufügen"])
 
 # Tab 1: Suche
 with tab1:
@@ -94,3 +103,20 @@ with tab2:
                 st.markdown(f"[PDF herunterladen]({result[1]})", unsafe_allow_html=True)
             else:
                 st.write("PDF-Datei nicht gefunden.")
+
+# Tab 3: Anleitung hinzufügen
+with tab3:
+    st.subheader("Neue Anleitung hinzufügen")
+    new_title = st.text_input("Titel der Anleitung")
+    new_content = st.text_area("Inhalt der Anleitung")
+    new_pdf_path = st.text_input("Pfad zur PDF-Datei")
+
+    if st.button("Anleitung speichern"):
+        if new_title and new_content and new_pdf_path:
+            try:
+                add_instruction(new_title, new_content, new_pdf_path)
+                st.success("Anleitung erfolgreich hinzugefügt.")
+            except Exception as e:
+                st.error(f"Fehler beim Hinzufügen der Anleitung: {str(e)}")
+        else:
+            st.error("Bitte alle Felder ausfüllen.")
