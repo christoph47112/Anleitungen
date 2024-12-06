@@ -3,7 +3,7 @@ import streamlit as st
 from rapidfuzz import process, fuzz
 import PyPDF2
 import os
-import openai
+from transformers import pipeline
 
 # Datenbankpfad
 DATABASE = 'instructions_database.db'
@@ -38,17 +38,13 @@ def add_instruction(title, content, pdf_path):
     conn.commit()
     conn.close()
 
-# Funktion: Zusammenfassen des Inhalts mit ChatGPT-2 (OpenAI API Beispiel)
-def summarize_with_chatgpt(content):
-    """Verwendet die OpenAI GPT-2 API, um den Inhalt zusammenzufassen."""
+# Funktion: Zusammenfassen des Inhalts mit Transformers
+summarizer = pipeline("summarization")
+
+def summarize_with_transformers(content):
+    """Verwendet Transformers (Hugging Face), um den Inhalt zusammenzufassen."""
     try:
-        # Beispiel: Verwenden Sie die OpenAI-API, um den Text zusammenzufassen
-        response = openai.Completion.create(
-            engine="text-davinci-003",  # Modell GPT-3 als Beispiel, ändern Sie es entsprechend, wenn GPT-2 verwendet werden soll
-            prompt=f"Fasse den folgenden Text zusammen:\n{content}",
-            max_tokens=150
-        )
-        summary = response.choices[0].text.strip()
+        summary = summarizer(content, max_length=150, min_length=30, do_sample=False)[0]['summary_text']
         return summary
     except Exception as e:
         st.error(f"Fehler bei der Zusammenfassung: {str(e)}")
@@ -79,8 +75,8 @@ def add_instructions_from_pdfs(pdf_files):
         # Titel automatisch aus dem Dateinamen generieren
         title = os.path.splitext(pdf_file.name)[0]
 
-        # Zusammenfassung mit ChatGPT-2 erstellen
-        summary = summarize_with_chatgpt(content)
+        # Zusammenfassung mit Transformers erstellen
+        summary = summarize_with_transformers(content)
         structured_content = f"### Zusammenfassung\n{summary}\n\n### Originalinhalt\n{content}"
 
         # Anleitung zur Datenbank hinzufügen
