@@ -5,7 +5,7 @@ import PyPDF2
 import os
 
 # Datenbankpfad
-DATABASE = '/mnt/data/expanded_instructions_database.db'
+DATABASE = os.path.abspath('/mnt/data/expanded_instructions_database.db')
 
 # Sicherstellen, dass der Upload-Ordner existiert
 UPLOAD_FOLDER = os.path.abspath('./uploaded_pdfs')
@@ -15,7 +15,10 @@ except FileExistsError:
     pass
 
 # Funktion: Beispielanleitungen zur Datenbank hinzufügen
-def add_example_instructions():
+def try:
+    add_example_instructions()
+except sqlite3.Error as e:
+    st.error(f"Fehler beim Hinzufügen der Beispielanleitungen: {e}"):
     """Fügt Beispielanleitungen zur SQLite-Datenbank hinzu."""
     example_instructions = [
         {
@@ -55,7 +58,11 @@ def add_example_instructions():
 # Funktion: Verbindung zur Datenbank herstellen
 def get_connection():
     """Stellt eine Verbindung zur SQLite-Datenbank her."""
-    conn = sqlite3.connect(DATABASE)
+    try:
+        conn = sqlite3.connect(DATABASE)
+    except sqlite3.Error as e:
+        st.error(f"Fehler bei der Verbindung zur Datenbank: {e}")
+        raise
     # Sicherstellen, dass die Tabelle existiert
     conn.execute('''CREATE TABLE IF NOT EXISTS instructions (
                         id INTEGER PRIMARY KEY AUTOINCREMENT,
