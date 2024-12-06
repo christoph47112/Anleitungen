@@ -46,7 +46,7 @@ def load_summarizer():
     global summarizer
     if summarizer is None:
         model_name = "sshleifer/distilbart-cnn-12-6"
-        summarizer = pipeline("summarization", model=model_name, framework="pt")
+        summarizer = pipeline("summarization", model=model_name, framework="tf")
 
 def summarize_with_transformers(content):
     """Verwendet Transformers (Hugging Face), um den Inhalt zusammenzufassen."""
