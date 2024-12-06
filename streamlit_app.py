@@ -4,7 +4,6 @@ from rapidfuzz import process, fuzz
 import PyPDF2
 import os
 from transformers import pipeline, AutoModelForSeq2SeqLM, AutoTokenizer
-import torch
 
 # Datenbankpfad
 DATABASE = 'instructions_database.db'
@@ -47,7 +46,7 @@ def load_summarizer():
     global summarizer
     if summarizer is None:
         model_name = "sshleifer/distilbart-cnn-12-6"
-        summarizer = pipeline("summarization", model=model_name, framework="pt", device=0 if torch.cuda.is_available() else -1)
+        summarizer = pipeline("summarization", model=model_name, framework="pt")
 
 def summarize_with_transformers(content):
     """Verwendet Transformers (Hugging Face), um den Inhalt zusammenzufassen."""
