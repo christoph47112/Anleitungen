@@ -4,97 +4,7 @@ from rapidfuzz import process, fuzz
 import PyPDF2
 import os
 
-# Datenbankpfad
-# Datenbankpfad wurde entfernt, um eine neue zu erstellen
-
-# Sicherstellen, dass der Upload-Ordner existiert
-UPLOAD_FOLDER = os.path.abspath('./uploaded_pdfs')
-try:
-    os.makedirs(UPLOAD_FOLDER, exist_ok=True)
-except FileExistsError:
-    pass
-
-
-    """Fügt Beispielanleitungen zur SQLite-Datenbank hinzu."""
-    example_instructions = [
-        {
-            "title": "Wie lege ich eine Aktion an?",
-            "content": """1. Gehen Sie zu 'Stammdaten' -> 'Aktionen'.
-2. Klicken Sie auf 'Neue Aktion anlegen'.
-3. Geben Sie die Aktionsdaten wie Name, Zeitraum und Märkte ein.
-4. Fügen Sie Artikel hinzu, die in der Aktion enthalten sein sollen.
-5. Speichern Sie die Aktion.""",
-            "pdf_path": ""
-        },
-        {
-            "title": "Wie kann ich Artikel zu einer bestehenden Aktion hinzufügen?",
-            "content": """1. Gehen Sie zu 'Stammdaten' -> 'Aktionen'.
-2. Wählen Sie die Aktion aus, zu der Sie Artikel hinzufügen möchten.
-3. Klicken Sie auf 'Artikel hinzufügen'.
-4. Geben Sie die Artikelnummer oder den Namen des Artikels ein.
-5. Speichern Sie die Änderungen.""",
-            "pdf_path": ""
-        },
-        {
-            "title": "Wie aktiviere oder deaktiviere ich eine Aktion?",
-            "content": """1. Gehen Sie zu 'Stammdaten' -> 'Aktionen'.
-2. Wählen Sie die Aktion aus, die Sie aktivieren oder deaktivieren möchten.
-3. Klicken Sie auf 'Aktion aktivieren' oder 'Aktion deaktivieren'.
-4. Bestätigen Sie die Änderung und klicken Sie auf 'Speichern'.""",
-            "pdf_path": ""
-        }
-    ]
-    # Verbindung zur Datenbank wurde entfernt
-    cursor = conn.cursor()
-    for instruction in example_instructions:
-        cursor.execute("INSERT INTO instructions (title, content, pdf_path) VALUES (?, ?, ?)", (instruction["title"], instruction["content"], instruction["pdf_path"]))
-    conn.commit()
-    conn.close()
-
-
-except sqlite3.Error as e:
-    st.error(f"Fehler beim Hinzufügen der Beispielanleitungen: {e}")
-    """Fügt Beispielanleitungen zur SQLite-Datenbank hinzu."""
-    example_instructions = [
-        {
-            "title": "Wie lege ich eine Aktion an?",
-            "content": """1. Gehen Sie zu 'Stammdaten' -> 'Aktionen'.
-2. Klicken Sie auf 'Neue Aktion anlegen'.
-3. Geben Sie die Aktionsdaten wie Name, Zeitraum und Märkte ein.
-4. Fügen Sie Artikel hinzu, die in der Aktion enthalten sein sollen.
-5. Speichern Sie die Aktion.""",
-            "pdf_path": ""
-        },
-        {
-            "title": "Wie kann ich Artikel zu einer bestehenden Aktion hinzufügen?",
-            "content": """1. Gehen Sie zu 'Stammdaten' -> 'Aktionen'.
-2. Wählen Sie die Aktion aus, zu der Sie Artikel hinzufügen möchten.
-3. Klicken Sie auf 'Artikel hinzufügen'.
-4. Geben Sie die Artikelnummer oder den Namen des Artikels ein.
-5. Speichern Sie die Änderungen.""",
-            "pdf_path": ""
-        },
-        {
-            "title": "Wie aktiviere oder deaktiviere ich eine Aktion?",
-            "content": """1. Gehen Sie zu 'Stammdaten' -> 'Aktionen'.
-2. Wählen Sie die Aktion aus, die Sie aktivieren oder deaktivieren möchten.
-3. Klicken Sie auf 'Aktion aktivieren' oder 'Aktion deaktivieren'.
-4. Bestätigen Sie die Änderung und klicken Sie auf 'Speichern'.""",
-            "pdf_path": ""
-        }
-    ]
-    conn = get_connection()
-    cursor = conn.cursor()
-    for instruction in example_instructions:
-        cursor.execute("INSERT INTO instructions (title, content, pdf_path) VALUES (?, ?, ?)", (instruction["title"], instruction["content"], instruction["pdf_path"]))
-    conn.commit()
-    conn.close()
-
-# Funktion: Verbindung zur Datenbank herstellen
-def get_connection():
-    """Stellt eine Verbindung zur SQLite-Datenbank her."""
-    try:
-        conn = sqlite3.connect(DATABASE)
+# Datenbankpfad (neue Datenbank wird später hinzugefügt)
     except sqlite3.Error as e:
         st.error(f"Fehler bei der Verbindung zur Datenbank: {e}")
         raise
@@ -105,17 +15,17 @@ def get_connection():
                         content TEXT NOT NULL,
                         pdf_path TEXT NOT NULL
                     )''')
-    conn.commit()
+    # Datenbank-Commit entfernt
     return conn
 
 # Funktion: Neue Anleitung zur Datenbank hinzufügen
 def add_instruction(title, content, pdf_path):
     """Fügt eine neue Anleitung zur SQLite-Datenbank hinzu."""
-    conn = get_connection()
-    cursor = conn.cursor()
+    # Verbindung zur Datenbank entfernt
+    # Cursor zur Datenbank entfernt
     cursor.execute("INSERT INTO instructions (title, content, pdf_path) VALUES (?, ?, ?)", (title, content, pdf_path))
     conn.commit()
-    conn.close()
+    # Datenbankverbindung geschlossen entfernt
 
 # Funktion: Neue Anleitungen aus PDF-Dateien hinzufügen
 def add_instructions_from_pdfs(pdf_files):
