@@ -15,11 +15,11 @@ except FileExistsError:
     pass
 
 # Funktion: Beispielanleitungen zur Datenbank hinzufügen
-def try:
+
+    """Fügt try:
     add_example_instructions()
 except NameError as e:
-    st.error(f"Fehler beim Hinzufügen der Beispielanleitungen: {e}"):
-    """Fügt Beispielanleitungen zur SQLite-Datenbank hinzu."""
+    st.error(f"Fehler beim Hinzufügen der Beispielanleitungen: {e}")Lite-Datenbank hinzu."""
     example_instructions = [
         {
             "title": "Wie lege ich eine Aktion an?",
