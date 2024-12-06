@@ -5,8 +5,7 @@ import PyPDF2
 import os
 
 # Datenbankpfad (neue Datenbank wird später hinzugefügt)
-    except sqlite3.Error as e:
-        st.error(f"Fehler bei der Verbindung zur Datenbank: {e}")
+    
         raise
     # Sicherstellen, dass die Tabelle existiert
     conn.execute('''CREATE TABLE IF NOT EXISTS instructions (
@@ -24,7 +23,7 @@ def add_instruction(title, content, pdf_path):
     # Verbindung zur Datenbank entfernt
     # Cursor zur Datenbank entfernt
     cursor.execute("INSERT INTO instructions (title, content, pdf_path) VALUES (?, ?, ?)", (title, content, pdf_path))
-    conn.commit()
+    # Datenbank-Commit entfernt
     # Datenbankverbindung geschlossen entfernt
 
 # Funktion: Neue Anleitungen aus PDF-Dateien hinzufügen
@@ -72,11 +71,11 @@ def generate_summary_and_steps(content):
 # Funktion: Suche in der Datenbank mit unscharfer Suche
 def search_instructions(query):
     """Durchsucht die Datenbank mit unscharfer Suche."""
-    conn = get_connection()
-    cursor = conn.cursor()
+    # Verbindung zur Datenbank entfernt
+    # Cursor zur Datenbank entfernt
     cursor.execute("SELECT title, content, pdf_path FROM instructions")
     results = cursor.fetchall()
-    conn.close()
+    # Datenbankverbindung geschlossen entfernt
 
     # Titel und Inhalte durchsuchen mit unscharfer Suche
     titles = [(row[0], row[1], row[2]) for row in results]
