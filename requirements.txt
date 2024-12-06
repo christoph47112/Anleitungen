@@ -6,4 +6,4 @@ openpyxl
 rapidfuzz
 PyPDF2
 PyTorch
-TensorFlow 2.0
+TensorFlow
