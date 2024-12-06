@@ -3,7 +3,11 @@ import streamlit as st
 from rapidfuzz import process, fuzz
 import PyPDF2
 import os
-from transformers import pipeline, AutoModelForSeq2SeqLM, AutoTokenizer
+from sumy.parsers.plaintext import PlaintextParser
+from sumy.nlp.tokenizers import Tokenizer
+from sumy.summarizers.lsa import LsaSummarizer
+from sumy.nlp.stemmers import Stemmer
+from sumy.utils import get_stop_words
 
 # Datenbankpfad
 DATABASE = 'instructions_database.db'
@@ -38,22 +42,17 @@ def add_instruction(title, content, pdf_path):
     conn.commit()
     conn.close()
 
-# Funktion: Zusammenfassen des Inhalts mit Transformers
-summarizer = None
-
-def load_summarizer():
-    """Lädt den Summarizer nur bei Bedarf."""
-    global summarizer
-    if summarizer is None:
-        model_name = "sshleifer/distilbart-cnn-12-6"
-        summarizer = pipeline("summarization", model=model_name, framework="tf")
-
-def summarize_with_transformers(content):
-    """Verwendet Transformers (Hugging Face), um den Inhalt zusammenzufassen."""
+# Funktion: Zusammenfassen des Inhalts mit Sumy
+def summarize_with_sumy(content):
+    """Verwendet Sumy, um den Inhalt zusammenzufassen."""
     try:
-        load_summarizer()
-        summary = summarizer(content, max_length=150, min_length=30, do_sample=False)[0]['summary_text']
-        return summary
+        parser = PlaintextParser.from_string(content, Tokenizer("german"))
+        stemmer = Stemmer("german")
+        summarizer = LsaSummarizer(stemmer)
+        summarizer.stop_words = get_stop_words("german")
+        summary = summarizer(parser.document, 3)  # Anzahl der Sätze in der Zusammenfassung
+        summary_text = "\n".join(str(sentence) for sentence in summary)
+        return summary_text
     except Exception as e:
         st.error(f"Fehler bei der Zusammenfassung: {str(e)}")
         return ""
@@ -83,8 +82,8 @@ def add_instructions_from_pdfs(pdf_files):
         # Titel automatisch aus dem Dateinamen generieren
         title = os.path.splitext(pdf_file.name)[0]
 
-        # Zusammenfassung mit Transformers erstellen
-        summary = summarize_with_transformers(content)
+        # Zusammenfassung mit Sumy erstellen
+        summary = summarize_with_sumy(content)
         structured_content = f"### Zusammenfassung\n{summary}\n\n### Originalinhalt\n{content}"
 
         # Anleitung zur Datenbank hinzufügen
