@@ -115,7 +115,7 @@ with tab1:
 
         # Zurücksetzen der Suche
         if st.button("Suche zurücksetzen"):
-            st.experimental_rerun()
+            query = ""
 
 # Tab 2: Anleitung auswählen
 with tab2:
