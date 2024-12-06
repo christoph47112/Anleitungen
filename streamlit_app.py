@@ -6,6 +6,10 @@ import os
 # Datenbankpfad
 DATABASE = 'instructions_database.db'
 
+# Sicherstellen, dass der Upload-Ordner existiert
+UPLOAD_FOLDER = 'uploaded_pdfs'
+os.makedirs(UPLOAD_FOLDER, exist_ok=True)
+
 # Funktion: Verbindung zur Datenbank herstellen
 def get_connection():
     """Stellt eine Verbindung zur SQLite-Datenbank her."""
@@ -24,7 +28,7 @@ def add_instruction(title, content, pdf_path):
 def add_instruction_from_pdf(title, pdf_file):
     """Fügt eine neue Anleitung aus einer PDF-Datei zur SQLite-Datenbank hinzu."""
     # Speichern der PDF-Datei
-    pdf_path = f"uploaded_pdfs/{pdf_file.name}"
+    pdf_path = os.path.join(UPLOAD_FOLDER, pdf_file.name)
     with open(pdf_path, "wb") as f:
         f.write(pdf_file.getbuffer())
 
