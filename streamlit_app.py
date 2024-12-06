@@ -14,7 +14,16 @@ os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 # Funktion: Verbindung zur Datenbank herstellen
 def get_connection():
     """Stellt eine Verbindung zur SQLite-Datenbank her."""
-    return sqlite3.connect(DATABASE)
+    conn = sqlite3.connect(DATABASE)
+    # Sicherstellen, dass die Tabelle existiert
+    conn.execute('''CREATE TABLE IF NOT EXISTS instructions (
+                        id INTEGER PRIMARY KEY AUTOINCREMENT,
+                        title TEXT NOT NULL,
+                        content TEXT NOT NULL,
+                        pdf_path TEXT NOT NULL
+                    )''')
+    conn.commit()
+    return conn
 
 # Funktion: Neue Anleitung zur Datenbank hinzufügen
 def add_instruction(title, content, pdf_path):
@@ -70,6 +79,9 @@ def search_instructions(query):
 
     # Titel und Inhalte durchsuchen mit unscharfer Suche
     titles = [(row[0], row[1], row[2]) for row in results]
+    if not titles:
+        return []
+    
     matches = process.extract(
         query,
         [row[0] + " " + row[1] for row in titles],
@@ -78,7 +90,7 @@ def search_instructions(query):
     )
 
     # Ergebnisse filtern
-    filtered_results = [titles[matches[idx][2]] for idx in range(len(matches))]
+    filtered_results = [titles[matches[idx][2]] for idx in range(len(matches)) if matches[idx][1] > 0]
     return filtered_results
 
 # Streamlit-App
