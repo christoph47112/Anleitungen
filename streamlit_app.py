@@ -6,13 +6,13 @@ import os
 
 # Datenbankpfad (neue Datenbank wird später hinzugefügt)
     
-            # Sicherstellen, dass die Tabelle existiert
+            # Sicherstellen, dass die Tabelle existiert    conn = sqlite3.connect(':memory:')
     conn.execute('''CREATE TABLE IF NOT EXISTS instructions (
-                        id INTEGER PRIMARY KEY AUTOINCREMENT,
-                        title TEXT NOT NULL,
-                        content TEXT NOT NULL,
-                        pdf_path TEXT NOT NULL
-                    )''')
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    title TEXT NOT NULL,
+                    content TEXT NOT NULL,
+                    pdf_path TEXT NOT NULL
+                )''')
     
     return conn
 
@@ -137,7 +137,7 @@ with tab2:
     st.subheader("Anleitung auswählen")
     
     # Dropdown für spezifische Anleitungen
-    conn = sqlite3.connect(':memory:')
+    conn = sqlite3.connect(':memory:')    conn = sqlite3.connect(':memory:')
     cursor = conn.cursor()
     cursor.execute("SELECT title FROM instructions")
     titles = [row[0] for row in cursor.fetchall()]
@@ -145,7 +145,7 @@ with tab2:
 
     selected_instruction = st.selectbox("Wähle eine Anleitung aus:", ["-- Auswahl --"] + titles)
     if selected_instruction != "-- Auswahl --":
-        conn = get_connection()
+        conn = sqlite3.connect(':memory:')
         cursor = conn.cursor()
         cursor.execute("SELECT content, pdf_path FROM instructions WHERE title = ?", (selected_instruction,))
         result = cursor.fetchone()
