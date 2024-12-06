@@ -76,8 +76,7 @@ def generate_summary_and_steps(content):
     # Hier wird eine einfache Heuristik verwendet, um die wichtigsten Inhalte zusammenzufassen
     lines = content.split("\n")
     summary = "".join(lines[:3])  # Nimmt die ersten 3 Zeilen als Zusammenfassung (kann angepasst werden)
-    steps = "
-".join([f"- Schritt {idx + 1}: {line.strip()}" for idx, line in enumerate(lines) if line.strip().startswith(('1.', '2.', '3.', '4.', '5.', '•', '-'))])
+    steps = "\n".join([f"- {line}" for line in lines if line.strip().startswith(('1.', '2.', '3.', '4.', '5.', '•', '-'))])
     return summary, steps
 
 # Funktion: Suche in der Datenbank mit unscharfer Suche
@@ -170,7 +169,8 @@ with tab2:
                 with open(result[1], 'rb') as pdf_file:
                     pdf_bytes = pdf_file.read()
                 st.download_button(label="PDF herunterladen", data=pdf_bytes, file_name=os.path.basename(result[1]), mime="application/pdf")
-            
+            else:
+                st.write("PDF-Datei nicht gefunden.")
 
 # Tab 3: Anleitung hinzufügen
 with tab3:
