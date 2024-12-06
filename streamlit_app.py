@@ -81,14 +81,19 @@ def add_instructions_from_pdfs(pdf_files):
         pdf_reader = PyPDF2.PdfReader(pdf_file)
         content = ""
         for page in pdf_reader.pages:
-            content += page.extract_text() + "\n"
+            extracted_text = page.extract_text()
+            if extracted_text:
+                content += extracted_text + "\n"
 
         # Titel automatisch aus dem Dateinamen generieren
         title = os.path.splitext(pdf_file.name)[0]
 
         # Zusammenfassung mit Sumy erstellen
-        summary = summarize_with_sumy(content)
-        structured_content = f"### Zusammenfassung\n{summary}\n\n### Originalinhalt\n{content}"
+        if content.strip():
+            summary = summarize_with_sumy(content)
+            structured_content = f"### Zusammenfassung\n{summary}\n\n### Originalinhalt\n{content}"
+        else:
+            structured_content = "### Originalinhalt\nInhalt konnte nicht extrahiert werden."
 
         # Anleitung zur Datenbank hinzufügen
         add_instruction(title, structured_content, pdf_path)
