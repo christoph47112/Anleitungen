@@ -103,7 +103,7 @@ with tab1:
                 for i, (title, content, pdf_path) in enumerate(results, 1):
                     st.markdown(f"**{i}. {title}**")
                     with st.expander("Anleitung anzeigen", expanded=True):
-                        st.write(content)
+                        st.markdown(content, unsafe_allow_html=True)
                     if os.path.exists(pdf_path):
                         st.markdown(f"[PDF herunterladen]({pdf_path})", unsafe_allow_html=True)
                     else:
@@ -139,7 +139,7 @@ with tab2:
         if result:
             st.markdown(f"### {selected_instruction}")
             with st.expander("Anleitung anzeigen", expanded=True):
-                st.write(result[0])
+                st.markdown(result[0], unsafe_allow_html=True)
             if os.path.exists(result[1]):
                 st.markdown(f"[PDF herunterladen]({result[1]})", unsafe_allow_html=True)
             else:
