@@ -3,6 +3,7 @@ import streamlit as st
 from rapidfuzz import process, fuzz
 import PyPDF2
 import os
+import openai
 
 # Datenbankpfad
 DATABASE = 'instructions_database.db'
@@ -37,6 +38,22 @@ def add_instruction(title, content, pdf_path):
     conn.commit()
     conn.close()
 
+# Funktion: Zusammenfassen des Inhalts mit ChatGPT-2 (OpenAI API Beispiel)
+def summarize_with_chatgpt(content):
+    """Verwendet die OpenAI GPT-2 API, um den Inhalt zusammenzufassen."""
+    try:
+        # Beispiel: Verwenden Sie die OpenAI-API, um den Text zusammenzufassen
+        response = openai.Completion.create(
+            engine="text-davinci-003",  # Modell GPT-3 als Beispiel, ändern Sie es entsprechend, wenn GPT-2 verwendet werden soll
+            prompt=f"Fasse den folgenden Text zusammen:\n{content}",
+            max_tokens=150
+        )
+        summary = response.choices[0].text.strip()
+        return summary
+    except Exception as e:
+        st.error(f"Fehler bei der Zusammenfassung: {str(e)}")
+        return ""
+
 # Funktion: Neue Anleitungen aus PDF-Dateien hinzufügen
 def add_instructions_from_pdfs(pdf_files):
     """Fügt neue Anleitungen aus einer Liste von PDF-Dateien zur SQLite-Datenbank hinzu."""
@@ -62,62 +79,9 @@ def add_instructions_from_pdfs(pdf_files):
         # Titel automatisch aus dem Dateinamen generieren
         title = os.path.splitext(pdf_file.name)[0]
 
-        # Zusammenfassung und Schritt-für-Schritt-Anleitung erstellen
-        summary, steps = generate_summary_and_steps(content)
-        structured_content = f"### Zusammenfassung\n{summary}\n\n### Schritt-für-Schritt-Anleitung\n{steps}"
-
-        # Anleitung zur Datenbank hinzufügen
-        add_instruction(title, structured_content, pdf_path)
-
-# Funktion: Generiert eine Zusammenfassung und eine Schritt-für-Schritt-Anleitung
-def generate_summary_and_steps_ki(content):
-    """Erstellt eine KI-generierte Zusammenfassung und Schritt-für-Schritt-Anleitung basierend auf dem PDF-Inhalt."""
-    from transformers import pipeline, set_seed
-    set_seed(42)
-    generator = pipeline('text-generation', model='gpt2')
-    
-    # Zusammenfassung erstellen
-    prompt_summary = "Zusammenfassung des Inhalts:
-" + content[:500]" + content[:500]""" + summary = generator(prompt_summary, max_length=100, num_return_sequences=1)[0]['generated_text']
-
-    # Schritt-für-Schritt-Anleitung erstellen
-    prompt_steps = "Schritt-für-Schritt Anleitung:
-" + content[:500]" + content[:500]""" + steps = generator(prompt_steps, max_length=150, num_return_sequences=1)[0]['generated_text']
-
-    return summary, steps
-
-def add_instructions_from_pdfs(pdf_files):
-    """Fügt neue Anleitungen aus einer Liste von PDF-Dateien zur SQLite-Datenbank hinzu."""
-    for pdf_file in pdf_files:
-        # Speichern der PDF-Datei
-        pdf_path = os.path.join(UPLOAD_FOLDER, pdf_file.name)
-        if os.path.exists(pdf_path):
-            base, extension = os.path.splitext(pdf_file.name)
-            counter = 1
-            while os.path.exists(pdf_path):
-                pdf_path = os.path.join(UPLOAD_FOLDER, f"{base}_{counter}{extension}")
-                counter += 1
-        if os.path.isdir(UPLOAD_FOLDER):
-            with open(pdf_path, "wb") as f:
-                f.write(pdf_file.getbuffer())
-
-        # PDF-Inhalt extrahieren
-        pdf_reader = PyPDF2.PdfReader(pdf_file)
-        content = ""
-        for page in pdf_reader.pages:
-            content += page.extract_text() + "
-"
-
-        # Titel automatisch aus dem Dateinamen generieren
-        title = os.path.splitext(pdf_file.name)[0]
-
-        # Zusammenfassung und Schritt-für-Schritt-Anleitung mit KI erstellen
-        summary, steps = generate_summary_and_steps_ki(content)
-        structured_content = f"### Zusammenfassung
-{summary}
-
-### Schritt-für-Schritt-Anleitung
-{steps}"
+        # Zusammenfassung mit ChatGPT-2 erstellen
+        summary = summarize_with_chatgpt(content)
+        structured_content = f"### Zusammenfassung\n{summary}\n\n### Originalinhalt\n{content}"
 
         # Anleitung zur Datenbank hinzufügen
         add_instruction(title, structured_content, pdf_path)
