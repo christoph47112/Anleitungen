@@ -6,25 +6,24 @@ import os
 
 # Datenbankpfad (neue Datenbank wird später hinzugefügt)
     
-        raise
-    # Sicherstellen, dass die Tabelle existiert
+            # Sicherstellen, dass die Tabelle existiert
     conn.execute('''CREATE TABLE IF NOT EXISTS instructions (
                         id INTEGER PRIMARY KEY AUTOINCREMENT,
                         title TEXT NOT NULL,
                         content TEXT NOT NULL,
                         pdf_path TEXT NOT NULL
                     )''')
-    # Datenbank-Commit entfernt
+    
     return conn
 
 # Funktion: Neue Anleitung zur Datenbank hinzufügen
 def add_instruction(title, content, pdf_path):
     """Fügt eine neue Anleitung zur SQLite-Datenbank hinzu."""
-    # Verbindung zur Datenbank entfernt
-    # Cursor zur Datenbank entfernt
+    
+    
     cursor.execute("INSERT INTO instructions (title, content, pdf_path) VALUES (?, ?, ?)", (title, content, pdf_path))
     # Datenbank-Commit entfernt
-    # Datenbankverbindung geschlossen entfernt
+    
 
 # Funktion: Neue Anleitungen aus PDF-Dateien hinzufügen
 def add_instructions_from_pdfs(pdf_files):
@@ -138,7 +137,7 @@ with tab2:
     st.subheader("Anleitung auswählen")
     
     # Dropdown für spezifische Anleitungen
-    conn = get_connection()
+    conn = sqlite3.connect(':memory:')
     cursor = conn.cursor()
     cursor.execute("SELECT title FROM instructions")
     titles = [row[0] for row in cursor.fetchall()]
