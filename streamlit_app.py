@@ -20,6 +20,20 @@ def add_instruction(title, content, pdf_path):
     conn.commit()
     conn.close()
 
+# Funktion: Neue Anleitung zur Datenbank aus einer PDF hinzufügen
+def add_instruction_from_pdf(title, pdf_file):
+    """Fügt eine neue Anleitung aus einer PDF-Datei zur SQLite-Datenbank hinzu."""
+    # Speichern der PDF-Datei
+    pdf_path = f"uploaded_pdfs/{pdf_file.name}"
+    with open(pdf_path, "wb") as f:
+        f.write(pdf_file.getbuffer())
+
+    # Inhalt als Platzhalter (die eigentliche Extraktion des Inhalts kann später hinzugefügt werden)
+    content = "Inhalt aus PDF extrahieren (noch nicht implementiert)"
+
+    # Anleitung zur Datenbank hinzufügen
+    add_instruction(title, content, pdf_path)
+
 # Funktion: Suche in der Datenbank mit unscharfer Suche
 def search_instructions(query):
     """Durchsucht die Datenbank mit unscharfer Suche."""
@@ -108,13 +122,12 @@ with tab2:
 with tab3:
     st.subheader("Neue Anleitung hinzufügen")
     new_title = st.text_input("Titel der Anleitung")
-    new_content = st.text_area("Inhalt der Anleitung")
-    new_pdf_path = st.text_input("Pfad zur PDF-Datei")
+    new_pdf_file = st.file_uploader("PDF-Datei der Anleitung hochladen", type=["pdf"])
 
     if st.button("Anleitung speichern"):
-        if new_title and new_content and new_pdf_path:
+        if new_title and new_pdf_file:
             try:
-                add_instruction(new_title, new_content, new_pdf_path)
+                add_instruction_from_pdf(new_title, new_pdf_file)
                 st.success("Anleitung erfolgreich hinzugefügt.")
             except Exception as e:
                 st.error(f"Fehler beim Hinzufügen der Anleitung: {str(e)}")
