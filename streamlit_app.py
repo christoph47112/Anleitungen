@@ -1,6 +1,7 @@
 import sqlite3
 import streamlit as st
 from rapidfuzz import process, fuzz
+import PyPDF2
 import os
 
 # Datenbankpfad
@@ -33,7 +34,12 @@ def add_instruction_from_pdf(title, pdf_file):
         f.write(pdf_file.getbuffer())
 
     # Inhalt als Platzhalter (die eigentliche Extraktion des Inhalts kann später hinzugefügt werden)
-    content = "Inhalt aus PDF extrahieren (noch nicht implementiert)"
+    import PyPDF2
+    # PDF-Inhalt extrahieren
+    pdf_reader = PyPDF2.PdfReader(pdf_file)
+    content = ""
+    for page in pdf_reader.pages:
+        content += page.extract_text()
 
     # Anleitung zur Datenbank hinzufügen
     add_instruction(title, content, pdf_path)
