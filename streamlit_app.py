@@ -8,7 +8,7 @@ import os
 DATABASE = 'instructions_database.db'
 
 # Sicherstellen, dass der Upload-Ordner existiert
-UPLOAD_FOLDER = os.path.abspath('uploaded_pdfs')
+UPLOAD_FOLDER = 'uploaded_pdfs'
 if not os.path.exists(UPLOAD_FOLDER):
     os.makedirs(UPLOAD_FOLDER)
 
@@ -40,13 +40,7 @@ def add_instructions_from_pdfs(pdf_files):
     """Fügt neue Anleitungen aus einer Liste von PDF-Dateien zur SQLite-Datenbank hinzu."""
     for pdf_file in pdf_files:
         # Speichern der PDF-Datei
-        pdf_path = os.path.join(UPLOAD_FOLDER, pdf_file.name)
-        if os.path.exists(pdf_path):
-            base, extension = os.path.splitext(pdf_file.name)
-            counter = 1
-            while os.path.exists(pdf_path):
-                pdf_path = os.path.join(UPLOAD_FOLDER, f"{base}_{counter}{extension}")
-                counter += 1
+        pdf_path = os.path.abspath(os.path.join(UPLOAD_FOLDER, pdf_file.name))
         with open(pdf_path, "wb") as f:
             f.write(pdf_file.getbuffer())
 
