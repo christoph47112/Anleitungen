@@ -117,9 +117,7 @@ with tab1:
                     with st.expander("Anleitung anzeigen", expanded=True):
                         st.markdown(content, unsafe_allow_html=True)
                     if os.path.isfile(pdf_path):
-                        with open(pdf_path, 'rb') as pdf_file:
-                            pdf_bytes = pdf_file.read()
-                        st.download_button(label="PDF herunterladen", data=pdf_bytes, file_name=os.path.basename(pdf_path), mime="application/pdf")
+                        st.markdown(f"[PDF herunterladen]({pdf_path})", unsafe_allow_html=True)
                     else:
                         st.warning("PDF-Datei nicht gefunden.")
             else:
@@ -155,9 +153,7 @@ with tab2:
             with st.expander("Anleitung anzeigen", expanded=True):
                 st.markdown(result[0], unsafe_allow_html=True)
             if os.path.exists(result[1]):
-                with open(result[1], 'rb') as pdf_file:
-                    pdf_bytes = pdf_file.read()
-                st.download_button(label="PDF herunterladen", data=pdf_bytes, file_name=os.path.basename(result[1]), mime="application/pdf")
+                st.markdown(f"[PDF herunterladen]({result[1]})", unsafe_allow_html=True)
             else:
                 st.write("PDF-Datei nicht gefunden.")
 
