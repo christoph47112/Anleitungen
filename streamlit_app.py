@@ -12,6 +12,7 @@ from sumy.utils import get_stop_words
 
 # NLTK Ressourcen herunterladen
 nltk.download('punkt')
+nltk.download('averaged_perceptron_tagger')
 
 # Datenbankpfad
 DATABASE = 'instructions_database.db'
