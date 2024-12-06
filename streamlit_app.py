@@ -8,13 +8,25 @@ import os
 DATABASE = 'instructions_database.db'
 
 # Sicherstellen, dass der Upload-Ordner existiert
-UPLOAD_FOLDER = 'uploaded_pdfs'
-os.makedirs(UPLOAD_FOLDER, exist_ok=True)
+UPLOAD_FOLDER = os.path.abspath('./uploaded_pdfs')
+try:
+    os.makedirs(UPLOAD_FOLDER, exist_ok=True)
+except FileExistsError:
+    pass
 
 # Funktion: Verbindung zur Datenbank herstellen
 def get_connection():
     """Stellt eine Verbindung zur SQLite-Datenbank her."""
-    return sqlite3.connect(DATABASE)
+    conn = sqlite3.connect(DATABASE)
+    # Sicherstellen, dass die Tabelle existiert
+    conn.execute('''CREATE TABLE IF NOT EXISTS instructions (
+                        id INTEGER PRIMARY KEY AUTOINCREMENT,
+                        title TEXT NOT NULL,
+                        content TEXT NOT NULL,
+                        pdf_path TEXT NOT NULL
+                    )''')
+    conn.commit()
+    return conn
 
 # Funktion: Neue Anleitung zur Datenbank hinzufügen
 def add_instruction(title, content, pdf_path):
@@ -31,7 +43,15 @@ def add_instructions_from_pdfs(pdf_files):
     for pdf_file in pdf_files:
         # Speichern der PDF-Datei
         pdf_path = os.path.join(UPLOAD_FOLDER, pdf_file.name)
-        with open(pdf_path, "wb") as f:
+        if os.path.exists(pdf_path):
+            base, extension = os.path.splitext(pdf_file.name)
+            counter = 1
+            while os.path.exists(pdf_path):
+                pdf_path = os.path.join(UPLOAD_FOLDER, f"{base}_{counter}{extension}")
+                counter += 1
+        if os.path.isdir(UPLOAD_FOLDER):
+            with open(pdf_path, "wb") as f:
+                f.write(pdf_file.getbuffer())
             f.write(pdf_file.getbuffer())
 
         # PDF-Inhalt extrahieren
@@ -56,7 +76,8 @@ def generate_summary_and_steps(content):
     # Hier wird eine einfache Heuristik verwendet, um die wichtigsten Inhalte zusammenzufassen
     lines = content.split("\n")
     summary = "".join(lines[:3])  # Nimmt die ersten 3 Zeilen als Zusammenfassung (kann angepasst werden)
-    steps = "\n".join([f"- {line}" for line in lines if line.strip().startswith(('1.', '2.', '3.', '4.', '5.', '•', '-'))])
+    steps = "
+".join([f"- Schritt {idx + 1}: {line.strip()}" for idx, line in enumerate(lines) if line.strip().startswith(('1.', '2.', '3.', '4.', '5.', '•', '-'))])
     return summary, steps
 
 # Funktion: Suche in der Datenbank mit unscharfer Suche
@@ -70,6 +91,9 @@ def search_instructions(query):
 
     # Titel und Inhalte durchsuchen mit unscharfer Suche
     titles = [(row[0], row[1], row[2]) for row in results]
+    if not titles:
+        return []
+    
     matches = process.extract(
         query,
         [row[0] + " " + row[1] for row in titles],
@@ -78,7 +102,7 @@ def search_instructions(query):
     )
 
     # Ergebnisse filtern
-    filtered_results = [titles[matches[idx][2]] for idx in range(len(matches))]
+    filtered_results = [titles[matches[idx][2]] for idx in range(len(matches)) if matches[idx][1] > 0]
     return filtered_results
 
 # Streamlit-App
@@ -104,8 +128,10 @@ with tab1:
                     st.markdown(f"**{i}. {title}**")
                     with st.expander("Anleitung anzeigen", expanded=True):
                         st.markdown(content, unsafe_allow_html=True)
-                    if os.path.exists(pdf_path):
-                        st.markdown(f"[PDF herunterladen]({pdf_path})", unsafe_allow_html=True)
+                    if os.path.isfile(pdf_path):
+                        with open(pdf_path, 'rb') as pdf_file:
+                            pdf_bytes = pdf_file.read()
+                        st.download_button(label="PDF herunterladen", data=pdf_bytes, file_name=os.path.basename(pdf_path), mime="application/pdf")
                     else:
                         st.warning("PDF-Datei nicht gefunden.")
             else:
@@ -141,9 +167,10 @@ with tab2:
             with st.expander("Anleitung anzeigen", expanded=True):
                 st.markdown(result[0], unsafe_allow_html=True)
             if os.path.exists(result[1]):
-                st.markdown(f"[PDF herunterladen]({result[1]})", unsafe_allow_html=True)
-            else:
-                st.write("PDF-Datei nicht gefunden.")
+                with open(result[1], 'rb') as pdf_file:
+                    pdf_bytes = pdf_file.read()
+                st.download_button(label="PDF herunterladen", data=pdf_bytes, file_name=os.path.basename(result[1]), mime="application/pdf")
+            
 
 # Tab 3: Anleitung hinzufügen
 with tab3:
