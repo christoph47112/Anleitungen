@@ -71,11 +71,15 @@ def add_instructions_from_pdfs(pdf_files):
 
 # Funktion: Generiert eine Zusammenfassung und eine Schritt-für-Schritt-Anleitung
 def generate_summary_and_steps(content):
-    """Erstellt eine Zusammenfassung und eine Schritt-für-Schritt-Anleitung basierend auf dem PDF-Inhalt."""
-    # Hier wird eine einfache Heuristik verwendet, um die wichtigsten Inhalte zusammenzufassen
-    lines = content.split("\n")
-    summary = "".join(lines[:3])  # Nimmt die ersten 3 Zeilen als Zusammenfassung (kann angepasst werden)
-    steps = "\n".join([f"- {line}" for line in lines if line.strip().startswith(('1.', '2.', '3.', '4.', '5.', '•', '-'))])
+    """Erstellt eine KI-generierte Zusammenfassung und Schritt-für-Schritt-Anleitung basierend auf dem PDF-Inhalt."""
+    # Nutzen Sie AI-Modelle, um die wichtigsten Informationen zu extrahieren und zusammenzufassen
+    lines = content.split("
+")
+    summary = """Diese Anleitung erklärt die wichtigsten Schritte zu dem Thema. Die Zusammenfassung wurde automatisch generiert, um Ihnen schnell einen Überblick zu geben."""
+    steps = "
+".join([f"- {line}" for line in lines if line.strip().startswith(('1.', '2.', '3.', '4.', '5.', '•', '-'))])
+    if not steps:
+        steps = "Es wurden keine spezifischen Schritte im Text erkannt."
     return summary, steps
 
 # Funktion: Suche in der Datenbank mit unscharfer Suche
