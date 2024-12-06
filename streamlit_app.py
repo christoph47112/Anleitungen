@@ -25,24 +25,26 @@ def add_instruction(title, content, pdf_path):
     conn.commit()
     conn.close()
 
-# Funktion: Neue Anleitung zur Datenbank aus einer PDF hinzufügen
-def add_instruction_from_pdf(title, pdf_file):
-    """Fügt eine neue Anleitung aus einer PDF-Datei zur SQLite-Datenbank hinzu."""
-    # Speichern der PDF-Datei
-    pdf_path = os.path.join(UPLOAD_FOLDER, pdf_file.name)
-    with open(pdf_path, "wb") as f:
-        f.write(pdf_file.getbuffer())
+# Funktion: Neue Anleitungen aus PDF-Dateien hinzufügen
+def add_instructions_from_pdfs(pdf_files):
+    """Fügt neue Anleitungen aus einer Liste von PDF-Dateien zur SQLite-Datenbank hinzu."""
+    for pdf_file in pdf_files:
+        # Speichern der PDF-Datei
+        pdf_path = os.path.join(UPLOAD_FOLDER, pdf_file.name)
+        with open(pdf_path, "wb") as f:
+            f.write(pdf_file.getbuffer())
 
-    # Inhalt als Platzhalter (die eigentliche Extraktion des Inhalts kann später hinzugefügt werden)
-    import PyPDF2
-    # PDF-Inhalt extrahieren
-    pdf_reader = PyPDF2.PdfReader(pdf_file)
-    content = ""
-    for page in pdf_reader.pages:
-        content += page.extract_text()
+        # PDF-Inhalt extrahieren
+        pdf_reader = PyPDF2.PdfReader(pdf_file)
+        content = ""
+        for page in pdf_reader.pages:
+            content += page.extract_text() + "\n"
 
-    # Anleitung zur Datenbank hinzufügen
-    add_instruction(title, content, pdf_path)
+        # Titel automatisch aus dem Dateinamen generieren
+        title = os.path.splitext(pdf_file.name)[0]
+
+        # Anleitung zur Datenbank hinzufügen
+        add_instruction(title, content, pdf_path)
 
 # Funktion: Suche in der Datenbank mit unscharfer Suche
 def search_instructions(query):
@@ -130,18 +132,15 @@ with tab2:
 
 # Tab 3: Anleitung hinzufügen
 with tab3:
-    st.subheader("Neue Anleitung hinzufügen")
-    new_pdf_file = st.file_uploader("PDF-Datei der Anleitung hochladen", type=["pdf"])
-    new_title = st.text_input("Titel der Anleitung", value=new_pdf_file.name if new_pdf_file else "")
+    st.subheader("Neue Anleitungen hinzufügen")
+    new_pdf_files = st.file_uploader("PDF-Dateien der Anleitungen hochladen", type=["pdf"], accept_multiple_files=True)
 
-    if st.button("Anleitung speichern"):
-        if new_pdf_file:
-            if not new_title:
-                new_title = new_pdf_file.name
+    if st.button("Anleitungen speichern"):
+        if new_pdf_files:
             try:
-                add_instruction_from_pdf(new_title, new_pdf_file)
-                st.success("Anleitung erfolgreich hinzugefügt.")
+                add_instructions_from_pdfs(new_pdf_files)
+                st.success("Anleitungen erfolgreich hinzugefügt.")
             except Exception as e:
-                st.error(f"Fehler beim Hinzufügen der Anleitung: {str(e)}")
+                st.error(f"Fehler beim Hinzufügen der Anleitungen: {str(e)}")
         else:
-            st.error("Bitte alle Felder ausfüllen.")
+            st.error("Bitte wählen Sie mindestens eine PDF-Datei aus.")
