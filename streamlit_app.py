@@ -9,8 +9,10 @@ DATABASE = 'instructions_database.db'
 
 # Sicherstellen, dass der Upload-Ordner existiert
 UPLOAD_FOLDER = os.path.abspath('./uploaded_pdfs')
-if not os.path.isdir(UPLOAD_FOLDER):
-    os.makedirs(UPLOAD_FOLDER)
+try:
+    os.makedirs(UPLOAD_FOLDER, exist_ok=True)
+except FileExistsError:
+    pass
 
 # Funktion: Verbindung zur Datenbank herstellen
 def get_connection():
