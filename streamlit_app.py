@@ -3,7 +3,7 @@ import streamlit as st
 from rapidfuzz import process, fuzz
 import PyPDF2
 import os
-from transformers import pipeline
+from transformers import pipeline, AutoModelForSeq2SeqLM, AutoTokenizer
 
 # Datenbankpfad
 DATABASE = 'instructions_database.db'
@@ -39,11 +39,20 @@ def add_instruction(title, content, pdf_path):
     conn.close()
 
 # Funktion: Zusammenfassen des Inhalts mit Transformers
-summarizer = pipeline("summarization")
+summarizer = None
+
+def load_summarizer():
+    """Lädt den Summarizer nur bei Bedarf."""
+    global summarizer
+    if summarizer is None:
+        model_name = "sshleifer/distilbart-cnn-12-6"
+        summarizer = pipeline("summarization", model=model_name)
+
 
 def summarize_with_transformers(content):
     """Verwendet Transformers (Hugging Face), um den Inhalt zusammenzufassen."""
     try:
+        load_summarizer()
         summary = summarizer(content, max_length=150, min_length=30, do_sample=False)[0]['summary_text']
         return summary
     except Exception as e:
