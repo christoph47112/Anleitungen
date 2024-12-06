@@ -76,8 +76,7 @@ def generate_summary_and_steps(content):
     # Hier wird eine einfache Heuristik verwendet, um die wichtigsten Inhalte zusammenzufassen
     lines = content.split("\n")
     summary = "".join(lines[:3])  # Nimmt die ersten 3 Zeilen als Zusammenfassung (kann angepasst werden)
-    steps = "
-".join([f"- Schritt {idx + 1}: {line.strip()}" for idx, line in enumerate(lines) if line.strip().startswith(('1.', '2.', '3.', '4.', '5.', '•', '-'))])
+    steps = "\n".join([f"- Schritt {idx + 1}: {line.strip()}" for idx, line in enumerate(lines) if line.strip() and not line.isspace()])
     return summary, steps
 
 # Funktion: Suche in der Datenbank mit unscharfer Suche
