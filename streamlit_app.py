@@ -24,22 +24,24 @@ def add_example_instructions():
 2. Klicken Sie auf 'Neue Aktion anlegen'.
 3. Geben Sie die Aktionsdaten wie Name, Zeitraum und Märkte ein.
 4. Fügen Sie Artikel hinzu, die in der Aktion enthalten sein sollen.
-5. Speichern Sie die Aktion."
+5. Speichern Sie die Aktion.",
+            "pdf_path": ""
+        },
+        {
+            "title": "Wie kann ich Artikel zu einer bestehenden Aktion hinzufügen?",
+            "content": "1. Gehen Sie zu 'Stammdaten' -> 'Aktionen'.
+2. Wählen Sie die Aktion aus, zu der Sie Artikel hinzufügen möchten.
+3. Klicken Sie auf 'Artikel hinzufügen'.
+4. Geben Sie die Artikelnummer oder den Namen des Artikels ein.
+5. Speichern Sie die Änderungen.",
+            "pdf_path": ""
+        },
+        {
+            "title": "Wie aktiviere oder deaktiviere ich eine Aktion?",
+            "content": "1. Gehen Sie zu 'Stammdaten' -> 'Aktionen'.
 2. Wählen Sie die Aktion aus, die Sie aktivieren oder deaktivieren möchten.
 3. Klicken Sie auf 'Aktion aktivieren' oder 'Aktion deaktivieren'.
-4. Bestätigen Sie die Änderung und klicken Sie auf 'Speichern', um die Aktion zu sichern."
-3. Klicken Sie auf 'Aktion aktivieren' oder 'Aktion deaktivieren'.
-4. Bestätigen Sie die Änderung und speichern Sie."
-3. Klicken Sie auf 'Aktion aktivieren' oder 'Aktion deaktivieren'.
-4. Bestätigen Sie die Änderung und speichern Sie."
-3. Klicken Sie auf 'Aktion aktivieren' oder 'Aktion deaktivieren'.
-4. Bestätigen Sie die Änderung und speichern Sie."
-3. Klicken Sie auf 'Aktion aktivieren' oder 'Aktion deaktivieren'.
-4. Bestätigen Sie die Änderung und speichern Sie."
-3. Klicken Sie auf 'Aktion aktivieren' oder 'Aktion deaktivieren'.
-4. Bestätigen Sie die Änderung und speichern Sie."
-3. Klicken Sie auf 'Aktion aktivieren' oder 'Aktion deaktivieren'.
-4. Bestätigen Sie die Änderung und speichern Sie.",
+4. Bestätigen Sie die Änderung und klicken Sie auf 'Speichern'.",
             "pdf_path": ""
         }
     ]
