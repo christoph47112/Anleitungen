@@ -3,11 +3,15 @@ import streamlit as st
 from rapidfuzz import process, fuzz
 import PyPDF2
 import os
+import nltk
 from sumy.parsers.plaintext import PlaintextParser
 from sumy.nlp.tokenizers import Tokenizer
 from sumy.summarizers.lsa import LsaSummarizer
 from sumy.nlp.stemmers import Stemmer
 from sumy.utils import get_stop_words
+
+# NLTK Ressourcen herunterladen
+nltk.download('punkt')
 
 # Datenbankpfad
 DATABASE = 'instructions_database.db'
