@@ -5,7 +5,7 @@ import PyPDF2
 import os
 
 # Datenbankpfad
-DATABASE = os.path.abspath('/mnt/data/expanded_instructions_database.db')
+# Datenbankpfad wurde entfernt, um eine neue zu erstellen
 
 # Sicherstellen, dass der Upload-Ordner existiert
 UPLOAD_FOLDER = os.path.abspath('./uploaded_pdfs')
@@ -44,7 +44,7 @@ except FileExistsError:
             "pdf_path": ""
         }
     ]
-    conn = get_connection()
+    # Verbindung zur Datenbank wurde entfernt
     cursor = conn.cursor()
     for instruction in example_instructions:
         cursor.execute("INSERT INTO instructions (title, content, pdf_path) VALUES (?, ?, ?)", (instruction["title"], instruction["content"], instruction["pdf_path"]))
@@ -184,7 +184,7 @@ def search_instructions(query):
     filtered_results = [titles[matches[idx][2]] for idx in range(len(matches)) if matches[idx][1] > 0]
     return filtered_results
 
-add_example_instructions()
+# Beispielanleitungen wurden vorübergehend deaktiviert
 
 # Streamlit-App
 st.title("Anleitungsmodul für das WWS")
