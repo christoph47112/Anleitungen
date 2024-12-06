@@ -8,8 +8,8 @@ import os
 DATABASE = 'instructions_database.db'
 
 # Sicherstellen, dass der Upload-Ordner existiert
-UPLOAD_FOLDER = os.path.abspath('./uploaded_pdfs')
-if not os.path.isdir(UPLOAD_FOLDER):
+UPLOAD_FOLDER = os.path.abspath('uploaded_pdfs')
+if not os.path.exists(UPLOAD_FOLDER):
     os.makedirs(UPLOAD_FOLDER)
 
 # Funktion: Verbindung zur Datenbank herstellen
@@ -47,8 +47,7 @@ def add_instructions_from_pdfs(pdf_files):
             while os.path.exists(pdf_path):
                 pdf_path = os.path.join(UPLOAD_FOLDER, f"{base}_{counter}{extension}")
                 counter += 1
-        if os.path.isdir(UPLOAD_FOLDER):
-            with open(pdf_path, "wb") as f:
+        with open(pdf_path, "wb") as f:
             f.write(pdf_file.getbuffer())
 
         # PDF-Inhalt extrahieren
