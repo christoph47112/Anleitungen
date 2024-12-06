@@ -121,11 +121,13 @@ with tab2:
 # Tab 3: Anleitung hinzufügen
 with tab3:
     st.subheader("Neue Anleitung hinzufügen")
-    new_title = st.text_input("Titel der Anleitung")
+    new_title = st.text_input("Titel der Anleitung", value=new_pdf_file.name if new_pdf_file else "")
     new_pdf_file = st.file_uploader("PDF-Datei der Anleitung hochladen", type=["pdf"])
 
     if st.button("Anleitung speichern"):
-        if new_title and new_pdf_file:
+        if new_pdf_file:
+        if not new_title:
+            new_title = new_pdf_file.name
             try:
                 add_instruction_from_pdf(new_title, new_pdf_file)
                 st.success("Anleitung erfolgreich hinzugefügt.")
