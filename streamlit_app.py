@@ -14,16 +14,7 @@ os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 # Funktion: Verbindung zur Datenbank herstellen
 def get_connection():
     """Stellt eine Verbindung zur SQLite-Datenbank her."""
-    conn = sqlite3.connect(DATABASE)
-    # Sicherstellen, dass die Tabelle existiert
-    conn.execute('''CREATE TABLE IF NOT EXISTS instructions (
-                        id INTEGER PRIMARY KEY AUTOINCREMENT,
-                        title TEXT NOT NULL,
-                        content TEXT NOT NULL,
-                        pdf_path TEXT NOT NULL
-                    )''')
-    conn.commit()
-    return conn
+    return sqlite3.connect(DATABASE)
 
 # Funktion: Neue Anleitung zur Datenbank hinzufügen
 def add_instruction(title, content, pdf_path):
@@ -39,7 +30,7 @@ def add_instructions_from_pdfs(pdf_files):
     """Fügt neue Anleitungen aus einer Liste von PDF-Dateien zur SQLite-Datenbank hinzu."""
     for pdf_file in pdf_files:
         # Speichern der PDF-Datei
-        pdf_path = os.path.abspath(os.path.join(UPLOAD_FOLDER, pdf_file.name))
+        pdf_path = os.path.join(UPLOAD_FOLDER, pdf_file.name)
         with open(pdf_path, "wb") as f:
             f.write(pdf_file.getbuffer())
 
@@ -79,9 +70,6 @@ def search_instructions(query):
 
     # Titel und Inhalte durchsuchen mit unscharfer Suche
     titles = [(row[0], row[1], row[2]) for row in results]
-    if not titles:
-        return []
-    
     matches = process.extract(
         query,
         [row[0] + " " + row[1] for row in titles],
@@ -90,7 +78,7 @@ def search_instructions(query):
     )
 
     # Ergebnisse filtern
-    filtered_results = [titles[matches[idx][2]] for idx in range(len(matches)) if matches[idx][1] > 0]
+    filtered_results = [titles[matches[idx][2]] for idx in range(len(matches))]
     return filtered_results
 
 # Streamlit-App
@@ -116,7 +104,7 @@ with tab1:
                     st.markdown(f"**{i}. {title}**")
                     with st.expander("Anleitung anzeigen", expanded=True):
                         st.markdown(content, unsafe_allow_html=True)
-                    if os.path.isfile(pdf_path):
+                    if os.path.exists(pdf_path):
                         st.markdown(f"[PDF herunterladen]({pdf_path})", unsafe_allow_html=True)
                     else:
                         st.warning("PDF-Datei nicht gefunden.")
