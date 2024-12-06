@@ -15,7 +15,10 @@ except FileExistsError:
     pass
 
 # Funktion: Beispielanleitungen zur Datenbank hinzufügen
-def add_example_instructions():
+def try:
+    add_example_instructions()
+except NameError as e:
+    st.error(f"Fehler beim Hinzufügen der Beispielanleitungen: {e}"):
     """Fügt Beispielanleitungen zur SQLite-Datenbank hinzu."""
     example_instructions = [
         {
@@ -45,7 +48,7 @@ def add_example_instructions():
             "pdf_path": ""
         }
     ]
-    conn = get_connection()
+    conn = sqlite3.connect(DATABASE)
     cursor = conn.cursor()
     for instruction in example_instructions:
         cursor.execute("INSERT INTO instructions (title, content, pdf_path) VALUES (?, ?, ?)", (instruction["title"], instruction["content"], instruction["pdf_path"]))
