@@ -1,6 +1,7 @@
 import sqlite3
 import streamlit as st
 from rapidfuzz import process, fuzz
+import os
 
 # Datenbankpfad
 DATABASE = 'instructions_database.db'
@@ -29,7 +30,7 @@ def search_instructions(query):
     )
 
     # Ergebnisse filtern
-    filtered_results = [titles[idx[2]] for idx in matches]
+    filtered_results = [titles[matches[idx][2]] for idx in range(len(matches))]
     return filtered_results
 
 # Streamlit-App
@@ -54,7 +55,10 @@ with tab1:
                 for i, (title, content, pdf_path) in enumerate(results, 1):
                     st.markdown(f"**{i}. {title}**")
                     st.write(content)
-                    st.markdown(f"[PDF herunterladen](./{pdf_path})", unsafe_allow_html=True)
+                    if os.path.exists(pdf_path):
+                        st.markdown(f"[PDF herunterladen]({pdf_path})", unsafe_allow_html=True)
+                    else:
+                        st.write("PDF-Datei nicht gefunden.")
             else:
                 st.write("Keine Ergebnisse gefunden.")
         except Exception as e:
@@ -86,4 +90,7 @@ with tab2:
         if result:
             st.markdown(f"### {selected_instruction}")
             st.write(result[0])
-            st.markdown(f"[PDF herunterladen](./{result[1]})", unsafe_allow_html=True)
+            if os.path.exists(result[1]):
+                st.markdown(f"[PDF herunterladen]({result[1]})", unsafe_allow_html=True)
+            else:
+                st.write("PDF-Datei nicht gefunden.")
