@@ -49,7 +49,6 @@ def add_instructions_from_pdfs(pdf_files):
                 counter += 1
         if os.path.isdir(UPLOAD_FOLDER):
             with open(pdf_path, "wb") as f:
-                f.write(pdf_file.getbuffer())
             f.write(pdf_file.getbuffer())
 
         # PDF-Inhalt extrahieren
