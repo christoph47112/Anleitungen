@@ -93,7 +93,7 @@ with tab1:
                     if os.path.exists(pdf_path):
                         st.markdown(f"[PDF herunterladen]({pdf_path})", unsafe_allow_html=True)
                     else:
-                        st.write("PDF-Datei nicht gefunden.")
+                        st.warning("PDF-Datei nicht gefunden.")
             else:
                 st.write("Keine Ergebnisse gefunden.")
         except Exception as e:
@@ -124,7 +124,8 @@ with tab2:
 
         if result:
             st.markdown(f"### {selected_instruction}")
-            st.write(result[0])
+            with st.expander("Anleitung anzeigen", expanded=True):
+                st.write(result[0])
             if os.path.exists(result[1]):
                 st.markdown(f"[PDF herunterladen]({result[1]})", unsafe_allow_html=True)
             else:
