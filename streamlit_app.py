@@ -21,6 +21,7 @@ def add_example_instructions():
         {
             "title": "Wie lege ich eine Aktion an?",
             "content": "1. Gehen Sie zu 'Stammdaten' -> 'Aktionen'.
+
 2. Klicken Sie auf 'Neue Aktion anlegen'.
 3. Geben Sie die Aktionsdaten wie Name, Zeitraum und Märkte ein.
 4. Fügen Sie Artikel hinzu, die in der Aktion enthalten sein sollen.
