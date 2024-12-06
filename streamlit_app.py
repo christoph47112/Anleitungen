@@ -70,17 +70,59 @@ def add_instructions_from_pdfs(pdf_files):
         add_instruction(title, structured_content, pdf_path)
 
 # Funktion: Generiert eine Zusammenfassung und eine Schritt-für-Schritt-Anleitung
-def generate_summary_and_steps(content):
+def generate_summary_and_steps_ki(content):
     """Erstellt eine KI-generierte Zusammenfassung und Schritt-für-Schritt-Anleitung basierend auf dem PDF-Inhalt."""
-    # Nutzen Sie AI-Modelle, um die wichtigsten Informationen zu extrahieren und zusammenzufassen
-    lines = content.split("
-")
-    summary = """Diese Anleitung erklärt die wichtigsten Schritte zu dem Thema. Die Zusammenfassung wurde automatisch generiert, um Ihnen schnell einen Überblick zu geben."""
-    steps = "
-".join([f"- {line}" for line in lines if line.strip().startswith(('1.', '2.', '3.', '4.', '5.', '•', '-'))])
-    if not steps:
-        steps = "Es wurden keine spezifischen Schritte im Text erkannt."
+    from transformers import pipeline, set_seed
+    set_seed(42)
+    generator = pipeline('text-generation', model='gpt2')
+    
+    # Zusammenfassung erstellen
+    prompt_summary = "Zusammenfassung des Inhalts:
+" + content[:500]
+    summary = generator(prompt_summary, max_length=100, num_return_sequences=1)[0]['generated_text']
+
+    # Schritt-für-Schritt-Anleitung erstellen
+    prompt_steps = "Schritt-für-Schritt Anleitung:
+" + content[:500]
+    steps = generator(prompt_steps, max_length=150, num_return_sequences=1)[0]['generated_text']
+
     return summary, steps
+
+def add_instructions_from_pdfs(pdf_files):
+    """Fügt neue Anleitungen aus einer Liste von PDF-Dateien zur SQLite-Datenbank hinzu."""
+    for pdf_file in pdf_files:
+        # Speichern der PDF-Datei
+        pdf_path = os.path.join(UPLOAD_FOLDER, pdf_file.name)
+        if os.path.exists(pdf_path):
+            base, extension = os.path.splitext(pdf_file.name)
+            counter = 1
+            while os.path.exists(pdf_path):
+                pdf_path = os.path.join(UPLOAD_FOLDER, f"{base}_{counter}{extension}")
+                counter += 1
+        if os.path.isdir(UPLOAD_FOLDER):
+            with open(pdf_path, "wb") as f:
+                f.write(pdf_file.getbuffer())
+
+        # PDF-Inhalt extrahieren
+        pdf_reader = PyPDF2.PdfReader(pdf_file)
+        content = ""
+        for page in pdf_reader.pages:
+            content += page.extract_text() + "
+"
+
+        # Titel automatisch aus dem Dateinamen generieren
+        title = os.path.splitext(pdf_file.name)[0]
+
+        # Zusammenfassung und Schritt-für-Schritt-Anleitung mit KI erstellen
+        summary, steps = generate_summary_and_steps_ki(content)
+        structured_content = f"### Zusammenfassung
+{summary}
+
+### Schritt-für-Schritt-Anleitung
+{steps}"
+
+        # Anleitung zur Datenbank hinzufügen
+        add_instruction(title, structured_content, pdf_path)
 
 # Funktion: Suche in der Datenbank mit unscharfer Suche
 def search_instructions(query):
