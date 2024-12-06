@@ -15,10 +15,48 @@ except FileExistsError:
     pass
 
 # Funktion: Beispielanleitungen zur Datenbank hinzufügen
+def add_example_instructions():
+    """Fügt Beispielanleitungen zur SQLite-Datenbank hinzu."""
+    example_instructions = [
+        {
+            "title": "Wie lege ich eine Aktion an?",
+            "content": """1. Gehen Sie zu 'Stammdaten' -> 'Aktionen'.
+2. Klicken Sie auf 'Neue Aktion anlegen'.
+3. Geben Sie die Aktionsdaten wie Name, Zeitraum und Märkte ein.
+4. Fügen Sie Artikel hinzu, die in der Aktion enthalten sein sollen.
+5. Speichern Sie die Aktion.""",
+            "pdf_path": ""
+        },
+        {
+            "title": "Wie kann ich Artikel zu einer bestehenden Aktion hinzufügen?",
+            "content": """1. Gehen Sie zu 'Stammdaten' -> 'Aktionen'.
+2. Wählen Sie die Aktion aus, zu der Sie Artikel hinzufügen möchten.
+3. Klicken Sie auf 'Artikel hinzufügen'.
+4. Geben Sie die Artikelnummer oder den Namen des Artikels ein.
+5. Speichern Sie die Änderungen.""",
+            "pdf_path": ""
+        },
+        {
+            "title": "Wie aktiviere oder deaktiviere ich eine Aktion?",
+            "content": """1. Gehen Sie zu 'Stammdaten' -> 'Aktionen'.
+2. Wählen Sie die Aktion aus, die Sie aktivieren oder deaktivieren möchten.
+3. Klicken Sie auf 'Aktion aktivieren' oder 'Aktion deaktivieren'.
+4. Bestätigen Sie die Änderung und klicken Sie auf 'Speichern'.""",
+            "pdf_path": ""
+        }
+    ]
+    conn = get_connection()
+    cursor = conn.cursor()
+    for instruction in example_instructions:
+        cursor.execute("INSERT INTO instructions (title, content, pdf_path) VALUES (?, ?, ?)", (instruction["title"], instruction["content"], instruction["pdf_path"]))
+    conn.commit()
+    conn.close()
+
+# Aufruf der Funktion
 try:
     add_example_instructions()
 except sqlite3.Error as e:
-    st.error(f"Fehler beim Hinzufügen der Beispielanleitungen: {e}"):
+    st.error(f"Fehler beim Hinzufügen der Beispielanleitungen: {e}")
     """Fügt Beispielanleitungen zur SQLite-Datenbank hinzu."""
     example_instructions = [
         {
