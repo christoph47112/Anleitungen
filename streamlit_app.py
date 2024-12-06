@@ -14,20 +14,6 @@ try:
 except FileExistsError:
     pass
 
-# Funktion: Verbindung zur Datenbank herstellen
-def get_connection():
-    """Stellt eine Verbindung zur SQLite-Datenbank her."""
-    conn = sqlite3.connect(DATABASE)
-    # Sicherstellen, dass die Tabelle existiert
-    conn.execute('''CREATE TABLE IF NOT EXISTS instructions (
-                        id INTEGER PRIMARY KEY AUTOINCREMENT,
-                        title TEXT NOT NULL,
-                        content TEXT NOT NULL,
-                        pdf_path TEXT NOT NULL
-                    )''')
-    conn.commit()
-    return conn
-
 # Funktion: Beispielanleitungen zur Datenbank hinzufügen
 def add_example_instructions():
     """Fügt Beispielanleitungen zur SQLite-Datenbank hinzu."""
@@ -65,6 +51,20 @@ def add_example_instructions():
         cursor.execute("INSERT INTO instructions (title, content, pdf_path) VALUES (?, ?, ?)", (instruction["title"], instruction["content"], instruction["pdf_path"]))
     conn.commit()
     conn.close()
+
+# Funktion: Verbindung zur Datenbank herstellen
+def get_connection():
+    """Stellt eine Verbindung zur SQLite-Datenbank her."""
+    conn = sqlite3.connect(DATABASE)
+    # Sicherstellen, dass die Tabelle existiert
+    conn.execute('''CREATE TABLE IF NOT EXISTS instructions (
+                        id INTEGER PRIMARY KEY AUTOINCREMENT,
+                        title TEXT NOT NULL,
+                        content TEXT NOT NULL,
+                        pdf_path TEXT NOT NULL
+                    )''')
+    conn.commit()
+    return conn
 
 # Funktion: Neue Anleitung zur Datenbank hinzufügen
 def add_instruction(title, content, pdf_path):
