@@ -23,6 +23,9 @@ def add_example_instructions():
             "content": "1. Gehen Sie zu 'Stammdaten' -> 'Aktionen'.
 2. Wählen Sie die Aktion aus, die Sie aktivieren oder deaktivieren möchten.
 3. Klicken Sie auf 'Aktion aktivieren' oder 'Aktion deaktivieren'.
+4. Bestätigen Sie die Änderung und klicken Sie auf 'Speichern'."
+2. Wählen Sie die Aktion aus, die Sie aktivieren oder deaktivieren möchten.
+3. Klicken Sie auf 'Aktion aktivieren' oder 'Aktion deaktivieren'.
 4. Bestätigen Sie die Änderung und klicken Sie auf 'Speichern', um die Aktion zu sichern."
 3. Klicken Sie auf 'Aktion aktivieren' oder 'Aktion deaktivieren'.
 4. Bestätigen Sie die Änderung und speichern Sie."
