@@ -6,7 +6,7 @@ import os
 
 # Datenbankpfad (neue Datenbank wird später hinzugefügt)
     
-            # Sicherstellen, dass die Tabelle existiert    conn = sqlite3.connect(':memory:')
+            # Sicherstellen, dass die Tabelle existiert    # Verbindung zur Datenbank entfernt (bitte später eine neue Datenbank hinzufügen)
     conn.execute('''CREATE TABLE IF NOT EXISTS instructions (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
                     title TEXT NOT NULL,
@@ -21,7 +21,7 @@ def add_instruction(title, content, pdf_path):
     """Fügt eine neue Anleitung zur SQLite-Datenbank hinzu."""
     
     
-    cursor.execute("INSERT INTO instructions (title, content, pdf_path) VALUES (?, ?, ?)", (title, content, pdf_path))
+    # Datenbankabfrage entfernt VALUES (?, ?, ?)", (title, content, pdf_path))
     # Datenbank-Commit entfernt
     
 
@@ -126,7 +126,7 @@ with tab1:
             else:
                 st.write("Keine Ergebnisse gefunden.")
         except Exception as e:
-            st.error(f"Fehler bei der Suche: {str(e)}")
+            st.warning("Datenbank derzeit nicht verfügbar. Bitte später erneut versuchen.")
 
         # Zurücksetzen der Suche
         if st.button("Suche zurücksetzen"):
@@ -137,11 +137,11 @@ with tab2:
     st.subheader("Anleitung auswählen")
     
     # Dropdown für spezifische Anleitungen
-    conn = sqlite3.connect(':memory:')    conn = sqlite3.connect(':memory:')
-    cursor = conn.cursor()
+    conn = sqlite3.connect(':memory:')
+    # Cursor entfernt
     cursor.execute("SELECT title FROM instructions")
     titles = [row[0] for row in cursor.fetchall()]
-    conn.close()
+    # Datenbankverbindung geschlossen entfernt
 
     selected_instruction = st.selectbox("Wähle eine Anleitung aus:", ["-- Auswahl --"] + titles)
     if selected_instruction != "-- Auswahl --":
@@ -172,6 +172,6 @@ with tab3:
                 add_instructions_from_pdfs(new_pdf_files)
                 st.success("Anleitungen erfolgreich hinzugefügt.")
             except Exception as e:
-                st.error(f"Fehler beim Hinzufügen der Anleitungen: {str(e)}")
+                st.warning("Fehler beim Hinzufügen der Anleitungen. Bitte später erneut versuchen.")
         else:
             st.error("Bitte wählen Sie mindestens eine PDF-Datei aus.")
