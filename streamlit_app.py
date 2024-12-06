@@ -68,7 +68,7 @@ def add_instructions_from_pdfs(pdf_files):
         structured_content = f"### Zusammenfassung\n{summary}\n\n### Schritt-für-Schritt-Anleitung\n{steps}"
 
         # Anleitung zur Datenbank hinzufügen
-        add_instruction(title, structured_content, os.path.relpath(pdf_path))
+        add_instruction(title, structured_content, pdf_path)
 
 # Funktion: Generiert eine Zusammenfassung und eine Schritt-für-Schritt-Anleitung
 def generate_summary_and_steps(content):
@@ -127,8 +127,8 @@ with tab1:
                     st.markdown(f"**{i}. {title}**")
                     with st.expander("Anleitung anzeigen", expanded=True):
                         st.markdown(content, unsafe_allow_html=True)
-                    if pdf_path and os.path.isfile(os.path.join(UPLOAD_FOLDER, pdf_path)):
-                        with open(os.path.join(UPLOAD_FOLDER, pdf_path), 'rb') as pdf_file:
+                    if pdf_path and os.path.isfile(pdf_path):
+                        with open(pdf_path, 'rb') as pdf_file:
                             pdf_bytes = pdf_file.read()
                         st.download_button(label="PDF herunterladen", data=pdf_bytes, file_name=os.path.basename(pdf_path), mime="application/pdf")
                     else:
@@ -165,8 +165,8 @@ with tab2:
             st.markdown(f"### {selected_instruction}")
             with st.expander("Anleitung anzeigen", expanded=True):
                 st.markdown(result[0], unsafe_allow_html=True)
-            if result[1] and os.path.isfile(os.path.join(UPLOAD_FOLDER, result[1])):
-                with open(os.path.join(UPLOAD_FOLDER, result[1]), 'rb') as pdf_file:
+            if result[1] and os.path.isfile(result[1]):
+                with open(result[1], 'rb') as pdf_file:
                     pdf_bytes = pdf_file.read()
                 st.download_button(label="PDF herunterladen", data=pdf_bytes, file_name=os.path.basename(result[1]), mime="application/pdf")
             
