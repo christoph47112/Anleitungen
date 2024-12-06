@@ -76,7 +76,8 @@ def generate_summary_and_steps(content):
     # Hier wird eine einfache Heuristik verwendet, um die wichtigsten Inhalte zusammenzufassen
     lines = content.split("\n")
     summary = "".join(lines[:3])  # Nimmt die ersten 3 Zeilen als Zusammenfassung (kann angepasst werden)
-    steps = "\n".join([f"- Schritt {idx + 1}: {line.strip()}" for idx, line in enumerate(lines) if line.strip() and not line.isspace()])
+    steps = "
+".join([f"- Schritt {idx + 1}: {line.strip()}" for idx, line in enumerate(lines) if line.strip() and not line.isspace()])
     return summary, steps
 
 # Funktion: Suche in der Datenbank mit unscharfer Suche
@@ -127,12 +128,11 @@ with tab1:
                     st.markdown(f"**{i}. {title}**")
                     with st.expander("Anleitung anzeigen", expanded=True):
                         st.markdown(content, unsafe_allow_html=True)
-                    if os.path.isfile(pdf_path):
+                    if pdf_path and os.path.isfile(pdf_path):
                         with open(pdf_path, 'rb') as pdf_file:
                             pdf_bytes = pdf_file.read()
                         st.download_button(label="PDF herunterladen", data=pdf_bytes, file_name=os.path.basename(pdf_path), mime="application/pdf")
-                    else:
-                        st.warning("PDF-Datei nicht gefunden.")
+                    
             else:
                 st.write("Keine Ergebnisse gefunden.")
         except Exception as e:
@@ -165,7 +165,7 @@ with tab2:
             st.markdown(f"### {selected_instruction}")
             with st.expander("Anleitung anzeigen", expanded=True):
                 st.markdown(result[0], unsafe_allow_html=True)
-            if os.path.exists(result[1]):
+            if result[1] and os.path.exists(result[1]):
                 with open(result[1], 'rb') as pdf_file:
                     pdf_bytes = pdf_file.read()
                 st.download_button(label="PDF herunterladen", data=pdf_bytes, file_name=os.path.basename(result[1]), mime="application/pdf")
