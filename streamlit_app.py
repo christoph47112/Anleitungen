@@ -43,8 +43,21 @@ def add_instructions_from_pdfs(pdf_files):
         # Titel automatisch aus dem Dateinamen generieren
         title = os.path.splitext(pdf_file.name)[0]
 
+        # Zusammenfassung und Schritt-für-Schritt-Anleitung erstellen
+        summary, steps = generate_summary_and_steps(content)
+        structured_content = f"### Zusammenfassung\n{summary}\n\n### Schritt-für-Schritt-Anleitung\n{steps}"
+
         # Anleitung zur Datenbank hinzufügen
-        add_instruction(title, content, pdf_path)
+        add_instruction(title, structured_content, pdf_path)
+
+# Funktion: Generiert eine Zusammenfassung und eine Schritt-für-Schritt-Anleitung
+def generate_summary_and_steps(content):
+    """Erstellt eine Zusammenfassung und eine Schritt-für-Schritt-Anleitung basierend auf dem PDF-Inhalt."""
+    # Hier wird eine einfache Heuristik verwendet, um die wichtigsten Inhalte zusammenzufassen
+    lines = content.split("\n")
+    summary = "".join(lines[:3])  # Nimmt die ersten 3 Zeilen als Zusammenfassung (kann angepasst werden)
+    steps = "\n".join([f"- {line}" for line in lines if line.strip().startswith(('1.', '2.', '3.', '4.', '5.', '•', '-'))])
+    return summary, steps
 
 # Funktion: Suche in der Datenbank mit unscharfer Suche
 def search_instructions(query):
@@ -89,7 +102,8 @@ with tab1:
             if results:
                 for i, (title, content, pdf_path) in enumerate(results, 1):
                     st.markdown(f"**{i}. {title}**")
-                    st.write(content)
+                    with st.expander("Anleitung anzeigen", expanded=True):
+                        st.write(content)
                     if os.path.exists(pdf_path):
                         st.markdown(f"[PDF herunterladen]({pdf_path})", unsafe_allow_html=True)
                     else:
