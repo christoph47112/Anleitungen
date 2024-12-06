@@ -5,7 +5,7 @@ import PyPDF2
 import os
 
 # Datenbankpfad
-DATABASE = 'instructions_database.db'
+DATABASE = '/mnt/data/expanded_instructions_database.db'
 
 # Sicherstellen, dass der Upload-Ordner existiert
 UPLOAD_FOLDER = os.path.abspath('./uploaded_pdfs')
@@ -13,6 +13,44 @@ try:
     os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 except FileExistsError:
     pass
+
+# Funktion: Beispielanleitungen zur Datenbank hinzufügen
+def add_example_instructions():
+    """Fügt Beispielanleitungen zur SQLite-Datenbank hinzu."""
+    example_instructions = [
+        {
+            "title": "Wie lege ich eine Aktion an?",
+            "content": "1. Gehen Sie zu 'Stammdaten' -> 'Aktionen'.
+2. Klicken Sie auf 'Neue Aktion anlegen'.
+3. Geben Sie die Aktionsdaten wie Name, Zeitraum und Märkte ein.
+4. Fügen Sie Artikel hinzu, die in der Aktion enthalten sein sollen.
+5. Speichern Sie die Aktion.",
+            "pdf_path": ""
+        },
+        {
+            "title": "Wie kann ich Artikel zu einer bestehenden Aktion hinzufügen?",
+            "content": "1. Gehen Sie zu 'Stammdaten' -> 'Aktionen'.
+2. Wählen Sie die Aktion aus, zu der Sie Artikel hinzufügen möchten.
+3. Klicken Sie auf 'Artikel hinzufügen'.
+4. Geben Sie die Artikelnummer oder den Namen des Artikels ein.
+5. Speichern Sie die Änderungen.",
+            "pdf_path": ""
+        },
+        {
+            "title": "Wie aktiviere oder deaktiviere ich eine Aktion?",
+            "content": "1. Gehen Sie zu 'Stammdaten' -> 'Aktionen'.
+2. Wählen Sie die Aktion aus, die Sie aktivieren oder deaktivieren möchten.
+3. Klicken Sie auf 'Aktion aktivieren' oder 'Aktion deaktivieren'.
+4. Bestätigen Sie die Änderung und speichern Sie.",
+            "pdf_path": ""
+        }
+    ]
+    conn = get_connection()
+    cursor = conn.cursor()
+    for instruction in example_instructions:
+        cursor.execute("INSERT INTO instructions (title, content, pdf_path) VALUES (?, ?, ?)", (instruction["title"], instruction["content"], instruction["pdf_path"]))
+    conn.commit()
+    conn.close()
 
 # Funktion: Verbindung zur Datenbank herstellen
 def get_connection():
@@ -103,6 +141,8 @@ def search_instructions(query):
     # Ergebnisse filtern
     filtered_results = [titles[matches[idx][2]] for idx in range(len(matches)) if matches[idx][1] > 0]
     return filtered_results
+
+add_example_instructions()
 
 # Streamlit-App
 st.title("Anleitungsmodul für das WWS")
