@@ -14,7 +14,7 @@ try:
 except FileExistsError:
     pass
 
-def add_example_instructions():
+
     """Fügt Beispielanleitungen zur SQLite-Datenbank hinzu."""
     example_instructions = [
         {
@@ -51,12 +51,8 @@ def add_example_instructions():
     conn.commit()
     conn.close()
 
-# Aufruf der Funktion
-try:
-    add_examptry:
-    add_example_instructions()
+
 except sqlite3.Error as e:
-    st.error(f"Fehler beim Hinzufügen der Beispielanleitungen: {e}")qlite3.Error as e:
     st.error(f"Fehler beim Hinzufügen der Beispielanleitungen: {e}")
     """Fügt Beispielanleitungen zur SQLite-Datenbank hinzu."""
     example_instructions = [
