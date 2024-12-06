@@ -77,7 +77,7 @@ def generate_summary_and_steps(content):
     lines = content.split("\n")
     summary = "".join(lines[:3])  # Nimmt die ersten 3 Zeilen als Zusammenfassung (kann angepasst werden)
     steps = "
-".join([f"- Schritt {idx + 1}: {line.strip()}" for idx, line in enumerate(lines) if line.strip() and not line.isspace()])".join([f"- Schritt {idx + 1}: {line.strip()}" for idx, line in enumerate(lines) if line.strip() and not line.isspace()])".join([f"- Schritt {idx + 1}: {line.strip()}" for idx, line in enumerate(lines) if line.strip() and not line.isspace()])
+".join([f"- Schritt {idx + 1}: {line.strip()}" for idx, line in enumerate(lines) if line.strip() and not line.isspace()])".join([f"- Schritt {idx + 1}: {line.strip()}" for idx, line in enumerate(lines) if line.strip() and not line.isspace()])".join([f"- Schritt {idx + 1}: {line.strip()}" for idx, line in enumerate(lines) if line.strip() and not line.isspace()])".join([f"- Schritt {idx + 1}: {line.strip()}" for idx, line in enumerate(lines) if line.strip() and not line.isspace()])
     return summary, steps
 
 # Funktion: Suche in der Datenbank mit unscharfer Suche
