@@ -78,11 +78,11 @@ def generate_summary_and_steps_ki(content):
     
     # Zusammenfassung erstellen
     prompt_summary = "Zusammenfassung des Inhalts:
-" + content[:500]""" + summary = generator(prompt_summary, max_length=100, num_return_sequences=1)[0]['generated_text'][0]['generated_text']
+" + content[:500]" + content[:500]""" + summary = generator(prompt_summary, max_length=100, num_return_sequences=1)[0]['generated_text']
 
     # Schritt-für-Schritt-Anleitung erstellen
     prompt_steps = "Schritt-für-Schritt Anleitung:
-" + content[:500]""" + steps = generator(prompt_steps, max_length=150, num_return_sequences=1)[0]['generated_text'][0]['generated_text']
+" + content[:500]" + content[:500]""" + steps = generator(prompt_steps, max_length=150, num_return_sequences=1)[0]['generated_text']
 
     return summary, steps
 
