@@ -125,7 +125,7 @@ def search_instructions(query):
     return filtered_results
 
 # Streamlit-App
-st.title("Anleitungsmodul für das WWS")
+st.title("Anleitungsmodul für das RWWS")
 
 # Tabs für Suche, Anleitungsauswahl und Anleitung hinzufügen
 tab1, tab2, tab3 = st.tabs(["🔍 Suche", "📚 Anleitung auswählen", "➕ Anleitung hinzufügen"])
