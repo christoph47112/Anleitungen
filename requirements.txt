@@ -6,3 +6,4 @@ openpyxl
 rapidfuzz
 PyMuPDF
 sumy
+PyPDF2
